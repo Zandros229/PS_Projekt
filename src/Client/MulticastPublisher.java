@@ -5,7 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class MulticastClient {
+public class MulticastPublisher {
     private DatagramSocket socket;
     private InetAddress group;
     private byte[] buf;
