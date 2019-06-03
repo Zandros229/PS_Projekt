@@ -1,5 +1,7 @@
 package Server;
 
+import Data.ComuniactMSG;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -8,6 +10,12 @@ import java.net.MulticastSocket;
 public class MulticastReceiver extends Thread {
     protected MulticastSocket socket = null;
     protected byte[] buf = new byte[256];
+    private ComuniactMSG comuniactMSG;
+
+    public MulticastReceiver(ComuniactMSG comuniactMSG) {
+        this.comuniactMSG = comuniactMSG;
+    }
+
 
     public void run() {
         try {
@@ -19,6 +27,7 @@ public class MulticastReceiver extends Thread {
                 socket.receive(packet);
                 String received = new String(
                         packet.getData(), 0, packet.getLength());
+                comuniactMSG.SetMsg(received);
                 System.out.println(received);
                 if ("end".equals(received)) {
                     break;
