@@ -19,6 +19,7 @@ public class MulticastServer extends Thread {
                 socket.receive(packet);
                 String received = new String(
                         packet.getData(), 0, packet.getLength());
+                System.out.println(received);
                 if ("end".equals(received)) {
                     break;
                 }
