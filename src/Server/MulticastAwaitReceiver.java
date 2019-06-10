@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class MulticastReceiver implements Callable<List<String>> {
+public class MulticastAwaitReceiver implements Callable<String> {
     protected MulticastSocket socket = null;
     protected byte[] buf = new byte[256];
     private ComuniactMSG comuniactMSG;
 
-    public MulticastReceiver(ComuniactMSG comuniactMSG) {
+    public MulticastAwaitReceiver(ComuniactMSG comuniactMSG) {
         this.comuniactMSG = comuniactMSG;
     }
 
@@ -45,8 +45,7 @@ public class MulticastReceiver implements Callable<List<String>> {
 //    }
 
     @Override
-    public List<String> call() throws Exception {
-        List<String> templist=new ArrayList<>();
+    public String call() throws Exception {
         try {
             socket = new MulticastSocket(4446);
             InetAddress group = InetAddress.getByName("230.0.0.0");
@@ -57,9 +56,8 @@ public class MulticastReceiver implements Callable<List<String>> {
                 String received = new String(
                         packet.getData(), 0, packet.getLength());
                 comuniactMSG.SetMsg(received);
-                templist.add(comuniactMSG.msg);
                 System.out.println(received);
-                if ("end".equals(received)) {
+                if (comuniactMSG.msg!=null) {
                     break;
                 }
             }
@@ -67,11 +65,9 @@ public class MulticastReceiver implements Callable<List<String>> {
             socket.leaveGroup(group);
         } catch (IOException e) {
             System.out.printf(e.getMessage());
-            return new ArrayList<>();
+            return e.getMessage();
         }
         socket.close();
-        return templist;
+        return comuniactMSG.msg;
     }
-
-
 }
