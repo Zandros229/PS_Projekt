@@ -3,6 +3,7 @@ package MulticastApp;
 import Client.MulticastPublisher;
 import Data.ChatMember;
 import Data.ComuniactMSG;
+import Data.WrongNickNameException;
 import Server.MulticastAwaitReceiver;
 import Server.MulticastReceiver;
 
@@ -25,7 +26,7 @@ public class MultiCastApp {
         multicastReceiver= new MulticastReceiver(comuniactMSG);
     }
 
-    public void StartChat() throws IOException {
+    public void StartChat(String nick) throws IOException, WrongNickNameException {
         List<String> tempList=new ArrayList<>();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<List<String>> future= executor.submit(multicastReceiver);
@@ -34,16 +35,26 @@ public class MultiCastApp {
             tempList=future.get(10, TimeUnit.SECONDS);
         } catch(TimeoutException e){
             future.cancel(true);
-            System.out.println("Terminated!");
+            this.chatMember.setNick(nick);
+            System.out.println("no response");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
         for (String s:tempList
              ) {
             System.out.println(s);
+            try {
+                if (s.split(" ")[2].equals("BUSY")) {
+                    System.out.println("Choose another nickname");
+                    throw new WrongNickNameException("Nick name Busy");
+                }
+            }catch(IndexOutOfBoundsException e){
+                System.out.println(e.getMessage());
+            }
         }
+        chatMember.setNick(nick);
     }
-    public void SendNick(){
+    public void SendNick() throws WrongNickNameException{
         System.out.println("Send nick to start chat");
         Scanner scanner = new Scanner(System.in);
         String myMSG = scanner.nextLine();
@@ -51,7 +62,7 @@ public class MultiCastApp {
         try{
             if(myMSGTABLE[0].equals("NICK")){
                 multicastPublisher.multicast(myMSG);
-                StartChat();
+                StartChat(myMSGTABLE[1]);
             }else{
                 System.out.println("Wrong nick format");
             }
@@ -60,6 +71,7 @@ public class MultiCastApp {
         }catch(IOException e){
             System.out.println(e.getMessage());
         }
+        this.setAwait();
     }
     public void SendMSG(){
         System.out.println("Send msg with format MSG nick message");
@@ -104,7 +116,7 @@ public class MultiCastApp {
                 comuniactMSG.msg.concat(msg[i]+" ");
             }
             System.out.println(comuniactMSG);
-            setAwait();
+            this.setAwait();
         }
 
     }
