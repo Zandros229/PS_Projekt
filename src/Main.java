@@ -26,7 +26,7 @@ public class Main {
                     } catch (WrongNickNameException e) {
                         System.out.println("Nick name busy choose another one");
                     }
-                    //multiCastApp.setAwait();
+                    multiCastApp.setAwait();
                 }
             }else{
                 System.out.println("Write msg to send message to the chat");
@@ -34,7 +34,7 @@ public class Main {
                 if(myInput.equals("msg")){
                     multiCastApp.SendMSG();
                 }
-                //multiCastApp.setAwait();
+                multiCastApp.setAwait();
             }
 
         }

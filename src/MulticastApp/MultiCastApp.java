@@ -23,7 +23,7 @@ public class MultiCastApp {
         chatMember = new ChatMember();
         comuniactMSG = new ComuniactMSG();
         multicastPublisher = new MulticastPublisher();
-        multicastReceiver = new MulticastAwaitReceiver(comuniactMSG);
+        multicastReceiver = new MulticastAwaitReceiver(comuniactMSG,chatMember,multicastPublisher);
     }
 
     public void StartChat(String nick) throws IOException, WrongNickNameException {
@@ -100,39 +100,14 @@ public class MultiCastApp {
     }
 
     public void setAwait() {
-        System.out.println("set await");
+        //System.out.println("set await");
         String tempString = new String();
         MulticastAwaitReceiver multicastAwaitReceiver = new MulticastAwaitReceiver(comuniactMSG);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         FutureTask<String> futureTask = new FutureTask<>(multicastAwaitReceiver);
-        Thread thread=new Thread(futureTask);
+        ExecutorService executor= Executors.newSingleThreadExecutor();
 
-        try {
-            tempString = futureTask.get();
-            System.out.println(tempString);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        String[] msg = tempString.split(" ");
-        if (msg[0].equals("NICK")) {
-            try {
-                System.out.println(msg[1]);
-                if (msg[1].equals(chatMember.getNick())) {
-                    System.out.println("Nick busy");
-                    multicastPublisher.multicast("NICK " + chatMember.getNick() + " BUSY");
-                }
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-            setAwait();
-        } else if (msg[0].equals("MSG")) {
-            comuniactMSG.nick = msg[1];
-            //for (int i = 2; i < msg.length; i++) {
-            comuniactMSG.msg=msg[2];
-            //}
-            System.out.println(comuniactMSG);
-            this.setAwait();
-        }
+        executor.execute(futureTask);
 
     }
 

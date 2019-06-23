@@ -46,7 +46,7 @@ public class MulticastReceiver implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        List<String> templist=new ArrayList<>();
+        List<String> templist = new ArrayList<>();
         try {
             socket = new MulticastSocket(4446);
             InetAddress group = InetAddress.getByName("230.0.0.0");
@@ -58,7 +58,7 @@ public class MulticastReceiver implements Callable<List<String>> {
                         packet.getData(), 0, packet.getLength());
                 comuniactMSG.SetMsg(received);
                 templist.add(comuniactMSG.msg);
-                System.out.println(received+" from normal receiver");
+                System.out.println(received + " from normal receiver");
                 if ("end".equals(received)) {
                     break;
                 }
