@@ -58,7 +58,7 @@ public class MulticastReceiver implements Callable<List<String>> {
                         packet.getData(), 0, packet.getLength());
                 comuniactMSG.SetMsg(received);
                 templist.add(comuniactMSG.msg);
-                System.out.println(received);
+                System.out.println(received+" from normal receiver");
                 if ("end".equals(received)) {
                     break;
                 }

@@ -15,6 +15,7 @@ public class MulticastPublisher {
         group = InetAddress.getByName("230.0.0.0");
         buf = multicastMessage.getBytes();
 
+        System.out.println("wysłano "+multicastMessage);
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, group, 4446);
         socket.send(packet);

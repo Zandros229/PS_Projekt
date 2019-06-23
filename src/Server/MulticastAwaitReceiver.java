@@ -56,7 +56,7 @@ public class MulticastAwaitReceiver implements Callable<String> {
                 String received = new String(
                         packet.getData(), 0, packet.getLength());
                 comuniactMSG.SetMsg(received);
-                System.out.println(received);
+                System.out.println(received+" from receiver");
                 if (comuniactMSG.msg!=null) {
                     break;
                 }
