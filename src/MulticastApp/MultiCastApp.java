@@ -55,6 +55,10 @@ public class MultiCastApp {
                 if (tempList.split(" ")[2].equals("BUSY")) {
                     System.out.println("Choose another nickname");
                     throw new WrongNickNameException("Nick name Busy");
+                }else{
+                    future.cancel(true);
+                    executor.shutdown();
+                    this.chatMember.setNick(nick);
                 }
             } catch (IndexOutOfBoundsException e) {
                 System.out.println(e.getMessage());
