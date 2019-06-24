@@ -18,6 +18,7 @@ public class MultiCastApp {
     private MulticastAwaitReceiver multicastReceiver;
     private MulticastPublisher multicastPublisher;
     private ComuniactMSG comuniactMSG;
+    private MulticastReceiver receiver;
 
     public MultiCastApp() {
         chatMember = new ChatMember();
@@ -27,9 +28,11 @@ public class MultiCastApp {
     }
 
     public void StartChat(String nick) throws IOException, WrongNickNameException {
+        ComuniactMSG temp=new ComuniactMSG();
+        receiver=new MulticastReceiver(temp);
         String tempList = null;
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(multicastReceiver);
+        Future<String> future = executor.submit(receiver);
         String msg = null;
         try {
             tempList = future.get(10, TimeUnit.SECONDS);
@@ -58,7 +61,6 @@ public class MultiCastApp {
             }
         }
 
-        //chatMember.setNick(nick);
     }
 
     public void SendNick() throws WrongNickNameException {
@@ -82,6 +84,7 @@ public class MultiCastApp {
     }
 
     public void SendMSG() {
+        setAwait();
         System.out.println("Send msg with format MSG nick message");
         Scanner scanner = new Scanner(System.in);
         String myMSG = scanner.nextLine();
@@ -102,12 +105,12 @@ public class MultiCastApp {
     public void setAwait() {
         //System.out.println("set await");
         String tempString = new String();
-        MulticastAwaitReceiver multicastAwaitReceiver = new MulticastAwaitReceiver(comuniactMSG);
+        MulticastAwaitReceiver multicastAwaitReceiver = new MulticastAwaitReceiver(comuniactMSG,chatMember,multicastPublisher);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        FutureTask<String> futureTask = new FutureTask<>(multicastAwaitReceiver);
+
         ExecutorService executor= Executors.newSingleThreadExecutor();
 
-        executor.execute(futureTask);
+        executor.execute(multicastAwaitReceiver);
 
     }
 
